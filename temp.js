@@ -3,50 +3,41 @@ var url = require('url');
 var fs = require('fs');
 
 http.createServer(function (req, res) {
-
-  var png = Buffer.from([137,80,78,71,13,10,26,10])
-
-  var q = url.parse(req.url, true);
-  var filename = "." + q.pathname + ".html";
-  fs.readFile(filename, function(err, data) {
-    if (err) {
-      res.writeHead(404, {'Content-Type': 'text/html'});
-      return res.end("404 Not Found");
-    }  
-    
-    if(q.pathname == "/question2" && q.search.substring(0,9)=="?content="){         //get content here
-        res.writeHead(200, {'Content-Type': 'text/html'});
-        res.write(q.search.substring(9));
-        return res.end();
-    }
-    else{
-        res.writeHead(200, {'Content-Type': 'text/html'});      //open page here
-        res.write(data);
-        return res.end();
-    }
-  });
-  //console.log(req);
-  i=0;
-  var ispng=0;
-  var issvg=0;
-  if (q.pathname == "/question3" && req.method == 'POST') {     //get post message
+    var png = Buffer.from([137,80,78,71,13,10,26,10])
+    var q = url.parse(req.url, true);
+    var filename = "." + q.pathname + ".html";
+    fs.readFile(filename, function(err, data) {
+        if (err) {
+            res.writeHead(404, {'Content-Type': 'text/html'});
+            return res.end("404 Not Found");
+        }  
+        
+        if(q.pathname == "/question2" && q.search.substring(0,9)=="?content="){         //get content here
+            res.writeHead(200, {'Content-Type': 'text/html'});
+            res.write(q.search.substring(9));
+            return res.end();
+        }
+        else{
+            res.writeHead(200, {'Content-Type': 'text/html'});      //open page here
+            res.write(data);
+            return res.end();
+        }
+    });
+    i=0;
+    var ispng=0;
+    var issvg=0;
+    if (q.pathname == "/question3" && req.method == 'POST') {     //get post message
     body='';
     req.on('data', function (chunk) {
-        body+=chunk.toString('base64'); // convert Buffer to string
-       // console.log(body);
+        body+=chunk.toString('base64');
         if(i<1){
             if (chunk.slice(0,8).equals(png)){          //check first 8 bytes to see if the file is PNG [137,80,78,71,13,10,26,10]
                 ispng=1;
                 console.log("good file");
-                
-                //console.log(body.slice(0,8));
-                //console.log(chunk.slice(0,8));
             }
             else if (chunk.toString().substring(0,100).includes("svg")){    //check if first few lines contain "svg"
                                                                                       //not a good practice, can be tricked by txt file with "svg" in it
                 issvg=1;
-                
-                //console.log(chunk.toString().substring(0,100));
             }
             else{
                 console.log("not valid file");
@@ -54,22 +45,18 @@ http.createServer(function (req, res) {
         }
         i=1;
     });
-
     req.on('end', function() {
         var decodeImg = new Buffer(body, 'base64')
-        
         if (ispng==1 || issvg==1){
-  
             if (ispng==1){
                 var filename1 = "Received_png.png";
                 writeFile();
             }   
-            else if(issvg==1)
+            else if(issvg==1){
                 var filename1 = "Received_svg.svg";
                 writeFile();            
-        }
-            function writeFile() {
-                
+            }
+            function writeFile() {                          //png may not fully written here
                 if ((fs.existsSync(filename1))) {
                     console.log("file " + filename1 + "exists, use a new name");
                     filename1 ="0"+ filename1;
@@ -85,10 +72,8 @@ http.createServer(function (req, res) {
                         }
                         })
                 }             
-            } 
-        //console.log(body);
-        //;
+            }
+        }
     });
-
   }
 }).listen(8080);
