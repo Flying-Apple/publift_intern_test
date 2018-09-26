@@ -2,6 +2,11 @@ var http = require('http');
 var url = require('url');
 var fs = require('fs');
 
+
+function checktype(){
+    
+}
+
 http.createServer(function (req, res) {
     var png = Buffer.from([137,80,78,71,13,10,26,10])
     var q = url.parse(req.url, true);
@@ -11,7 +16,7 @@ http.createServer(function (req, res) {
             res.writeHead(404, {'Content-Type': 'text/html'});
             return res.end("404 Not Found");
         }  
-        i=0;
+        
         var ispng=0;
         var issvg=0;
 
@@ -23,9 +28,10 @@ http.createServer(function (req, res) {
 
         else if (q.pathname == "/question3" && req.method == 'POST') {     //get post message
             body='';
+            var doneTheStuff=false;
             req.on('data', function (chunk) {
                 body+=chunk.toString('base64');
-                if(i<1){
+                if(!doneTheStuff){
                     if (chunk.slice(0,8).equals(png)){          //check first 8 bytes to see if the file is PNG [137,80,78,71,13,10,26,10]
                         ispng=1;
                         console.log("good file");
@@ -36,10 +42,13 @@ http.createServer(function (req, res) {
                     }
                     else{
                         console.log("not valid file");
+                        doneTheStuff=true;
                         return res.end();
+                        
                     }
+                    
                 }
-                i=1;
+                
             });
             req.on('end', function() {
                 var decodeImg = new Buffer(body, 'base64')
