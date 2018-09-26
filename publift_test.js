@@ -24,12 +24,19 @@ http.createServer(function (req, res) {
                 body.push(chunk);
                 if (chunk.slice(0,8).equals(png)){          //check first 8 bytes to see if the file is PNG [137,80,78,71,13,10,26,10]
                     ispng=1;
+<<<<<<< HEAD
                     //console.log("good file");
+=======
+                    console.log("good file");
+>>>>>>> 8564200bf8179d911547a1be5ad22b40ee055321
                 }
                 else if (chunk.toString().substring(1,200).includes("svg")){    //check if first few lines contain "svg"
                                                                                               //not a good practice, can be tricked by file with "svg" in it
                     issvg=1;
+<<<<<<< HEAD
                     //console.log("good file");
+=======
+>>>>>>> 8564200bf8179d911547a1be5ad22b40ee055321
                 }       
             });
             
@@ -52,6 +59,7 @@ http.createServer(function (req, res) {
                         console.log("file " + filename1 + "exists, use a new name");
                         filename1 ="0"+ filename1;
                         writeFile();
+<<<<<<< HEAD
                     }
                     else {
                         fs.writeFile(filename1, decodeImg,'base64', function(err){
@@ -66,6 +74,32 @@ http.createServer(function (req, res) {
                     }             
                 }//writefile
                 
+=======
+                    }   
+                    else if(issvg==1){
+                        var filename1 = "Received_svg.svg";
+                        writeFile();            
+                    }
+                    function writeFile() {                          
+                        if ((fs.existsSync(filename1))) {
+                            console.log("file " + filename1 + "exists, use a new name");
+                            filename1 ="0"+ filename1;
+                            writeFile();
+                        }
+                        else {
+                            fs.writeFile(filename1, decodeImg,'base64', function(err){
+                                if (err){
+                                    console.log(err)
+                                }
+                                else{
+                                    console.log("done: " + filename1);
+                                    return res.end("done: " + filename1);
+                                }
+                                })
+                        }             
+                    }//writefile
+                }
+>>>>>>> 8564200bf8179d911547a1be5ad22b40ee055321
             });//req.on
           }//else if
         else{
