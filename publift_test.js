@@ -2,11 +2,6 @@ var http = require('http');
 var url = require('url');
 var fs = require('fs');
 
-
-function checktype(){
-    
-}
-
 http.createServer(function (req, res) {
     var png = Buffer.from([137,80,78,71,13,10,26,10])
     var q = url.parse(req.url, true);
@@ -16,16 +11,13 @@ http.createServer(function (req, res) {
             res.writeHead(404, {'Content-Type': 'text/html'});
             return res.end("404 Not Found");
         }  
-        
         var ispng=0;
         var issvg=0;
-
         if(q.pathname == "/question2" && q.search.substring(0,9)=="?content="){         //get content here
             res.writeHead(200, {'Content-Type': 'text/html'});
             res.write(q.search.substring(9));
             return res.end();
         }
-
         else if (q.pathname == "/question3" && req.method == 'POST') {     //get post message
             body=[];
             
@@ -39,15 +31,11 @@ http.createServer(function (req, res) {
                     else if (chunk.toString().substring(1,200).includes("svg")){    //check if first few lines contain "svg"
                                                                                               //not a good practice, can be tricked by txt file with "svg" in it
                         issvg=1;
-                    }
-
-                    
-                                
+                    }       
             });
             req.on('end', function() {
                     if (issvg==0 && ispng==0){
                         console.log("not valid file");
-                        
                         return res.end()
                     }
                 body = Buffer.concat(body).toString('base64');
