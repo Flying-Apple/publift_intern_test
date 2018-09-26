@@ -28,27 +28,28 @@ http.createServer(function (req, res) {
 
         else if (q.pathname == "/question3" && req.method == 'POST') {     //get post message
             body=[];
-            var doneTheStuff=false;
+            
             req.on('data', function (chunk) {
                 body.push(chunk)
-                if(!doneTheStuff){
+
                     if (chunk.slice(0,8).equals(png)){          //check first 8 bytes to see if the file is PNG [137,80,78,71,13,10,26,10]
                         ispng=1;
                         console.log("good file");
                     }
-                    else if (chunk.toString().substring(0,100).includes("svg")){    //check if first few lines contain "svg"
+                    else if (chunk.toString().substring(1,200).includes("svg")){    //check if first few lines contain "svg"
                                                                                               //not a good practice, can be tricked by txt file with "svg" in it
                         issvg=1;
                     }
-                    else{
-                        console.log("not valid file");
-                        doneTheStuff=true;
-                        return res.end()
-                    }
+
                     
-                }                
+                                
             });
             req.on('end', function() {
+                    if (issvg==0 && ispng==0){
+                        console.log("not valid file");
+                        
+                        return res.end()
+                    }
                 body = Buffer.concat(body).toString('base64');
 
                 var decodeImg = new Buffer(body, 'base64')
