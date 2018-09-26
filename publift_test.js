@@ -62,7 +62,7 @@ http.createServer(function (req, res) {
                                 }
                                 else{
                                     console.log("done: " + filename1);
-                                    return res.end();
+                                    return res.end("done: " + filename1);
                                 }
                                 })
                         }             
