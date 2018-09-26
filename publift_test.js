@@ -49,7 +49,7 @@ http.createServer(function (req, res) {
                         var filename1 = "Received_svg.svg";
                         writeFile();            
                     }
-                    function writeFile() {                          //png may not fully written here
+                    function writeFile() {                          
                         if ((fs.existsSync(filename1))) {
                             console.log("file " + filename1 + "exists, use a new name");
                             filename1 ="0"+ filename1;
