@@ -3,9 +3,9 @@ var url = require('url');
 var fs = require('fs');
 
 http.createServer(function (req, res) {
-    var png = Buffer.from([137,80,78,71,13,10,26,10])
+    var png = Buffer.from([137,80,78,71,13,10,26,10])               //png identifier
     var q = url.parse(req.url, true);
-    var filename = "." + q.pathname + ".html";
+    var filename = "." + q.pathname + ".html";                      //filename =  <pagename>.html
     fs.readFile(filename, function(err, data) {
         if (err) {
             res.writeHead(404, {'Content-Type': 'text/html'});
@@ -13,7 +13,7 @@ http.createServer(function (req, res) {
         }  
         var ispng=0;
         var issvg=0;
-        if(q.pathname == "/question2" && q.search.substring(0,9)=="?content="){         //get content here
+        if(q.pathname == "/question2" && q.search.substring(0,9)=="?content="){         //get content if path is question2
             res.writeHead(200, {'Content-Type': 'text/html'});
             res.write(q.search.substring(9));
             return res.end();
@@ -35,8 +35,7 @@ http.createServer(function (req, res) {
             });
             req.on('end', function() {
                     if (issvg==0 && ispng==0){
-                        console.log("not valid file");
-                        return res.end()
+                        return res.end("not valid file")
                     }
                 body = Buffer.concat(body).toString('base64');
 
