@@ -27,7 +27,7 @@ http.createServer(function (req, res) {
                     console.log("good file");
                 }
                 else if (chunk.toString().substring(1,200).includes("svg")){    //check if first few lines contain "svg"
-                                                                                              //not a good practice, can be tricked by txt file with "svg" in it
+                                                                                              //not a good practice, can be tricked by file with "svg" in it
                     issvg=1;
                 }       
             });
