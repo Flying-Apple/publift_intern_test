@@ -27,10 +27,10 @@ http.createServer(function (req, res) {
         }
 
         else if (q.pathname == "/question3" && req.method == 'POST') {     //get post message
-            body='';
+            body=[];
             var doneTheStuff=false;
             req.on('data', function (chunk) {
-                body+=chunk.toString('base64');
+                body.push(chunk)
                 if(!doneTheStuff){
                     if (chunk.slice(0,8).equals(png)){          //check first 8 bytes to see if the file is PNG [137,80,78,71,13,10,26,10]
                         ispng=1;
@@ -43,14 +43,14 @@ http.createServer(function (req, res) {
                     else{
                         console.log("not valid file");
                         doneTheStuff=true;
-                        return res.end();
-                        
+                        return res.end()
                     }
                     
-                }
-                
+                }                
             });
             req.on('end', function() {
+                body = Buffer.concat(body).toString('base64');
+
                 var decodeImg = new Buffer(body, 'base64')
                 if (ispng==1 || issvg==1){
                     if (ispng==1){
